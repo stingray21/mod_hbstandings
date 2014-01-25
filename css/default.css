@@ -1,0 +1,39 @@
+table.HBstandings {
+	width: 90%;
+	}
+
+table.HBstandings td,
+table.HBstandings th {
+	padding: 0.25em 0.5em;
+	border: 0;
+	}
+
+table.HBstandings.HBhighlight tr:hover td {
+	/*background: #23B;
+	color: #fff;*/
+	cursor: default;
+	}
+	
+table.HBstandings.HBhighlight tr:hover a,
+table.HBstandings.HBhighlight tr:hover a:link {
+	/*color: #fff;*/
+	}	
+	
+table.HBstandings.HBhighlight tr.heim td {
+	background: #23B;
+	color: #fff;
+	cursor: default;
+	}
+	
+
+table.HBstandings th {
+	text-align: center;
+	}
+
+table.HBstandings td {
+	text-align: right;
+	}
+
+table.HBstandings .textteam {
+	text-align: left;
+	}

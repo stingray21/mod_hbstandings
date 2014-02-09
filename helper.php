@@ -12,7 +12,7 @@ $jAp = JFactory::getApplication();
 // getting further Information of the team
 $query = $db->getQuery(true);
 $query->select('*');
-$query->from($db->quoteName('aaa_mannschaft'));
+$query->from($db->quoteName('hb_mannschaft'));
 $query->where($db->quoteName('kuerzel').' = '.$db->quote($kuerzel));
 $db->setQuery($query);
 $mannschaft = $db->loadObject();
@@ -24,17 +24,17 @@ if (is_null($posts=$db->loadRowList()))
 	return;
 }
 
-$tabelleTable = 'hb_data_'.$mannschaft->kuerzel.'tabelle';
 
-// checking if scheduleDB available
+// getting standings of the team from the DB
 $query = $db->getQuery(true);
-$query->select('COUNT(*)');
-$query->from('information_schema.tables');
-$query->where($db->quoteName('table_name').' = '.$db->quote($tabelleTable));
+$query->select('*');
+$query->from($db->qn('hb_tabelle'));
+$query->where($db->qn('kuerzel').' = '.$db->q($kuerzel));
+$query->order($db->qn('platz'));
 //echo nl2br($query);//die; //see resulting query
 $db->setQuery($query);
-$tabelleTableExists = $db->loadResult();
-//echo "<pre>"; print_r($tabelletableExists); echo "</pre>";
+$rows = $db->loadObjectList();
+//echo "<pre>"; print_r($rows); echo "</pre>";
 //display and convert to HTML when SQL error
 if (is_null($posts=$db->loadRowList()))
 {
@@ -42,33 +42,15 @@ if (is_null($posts=$db->loadRowList()))
 	return;
 }
 
-if ($tabelleTableExists)
+function markHeimInTabelle($mannschaft, $heim, $class = false)
 {
-	// getting standings of the team from the DB
-	$query = $db->getQuery(true);
-	$query->select('*');
-	$query->from($db->nameQuote($tabelleTable));
-	//echo nl2br($query);//die; //see resulting query
-	$db->setQuery($query);
-	$rows = $db->loadObjectList();
-	//echo "<pre>"; print_r($rows); echo "</pre>";
-	//display and convert to HTML when SQL error
-	if (is_null($posts=$db->loadRowList()))
+	if (strcmp(trim($mannschaft), trim($heim)) == 0)
 	{
-		$jAp->enqueueMessage(nl2br($db->getErrorMsg()),'error');
-		return;
-	}
-	
-	function markHeimInTabelle($mannschaft, $heim, $class = false)
-	{
-		if (strcmp(trim($mannschaft), trim($heim)) == 0)
+		if ($class == true)
 		{
-			if ($class == true)
-			{
-				return " class=\"heim\"";
-			}
-			return " heim";
+			return " class=\"heim\"";
 		}
-		return '';
+		return " heim";
 	}
+	return '';
 }

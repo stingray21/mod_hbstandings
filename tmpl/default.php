@@ -2,9 +2,10 @@
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
 
-$document =& JFactory::getDocument();
+$document = JFactory::getDocument();
 $document->addStyleSheet(JURI::base() . 'modules/mod_hbstandings/css/default.css');
 
+$tabelleTableExists = true;
 if ($tabelleTableExists)
 {
 	
@@ -45,21 +46,21 @@ if ($tabelleTableExists)
 			}
 			// row in HBtabelle table
 			echo "<tr class=\"{$backgroundColor}";
-			if ($highlightHomeTeam) echo markHeimInTabelle($row->Verein, $mannschaft->name);
+			if ($highlightHomeTeam) echo markHeimInTabelle($row->verein, $mannschaft->name);
 			echo "\">";
-			echo "<td>{$row->Platz}</td><td class=\"textteam\"><strong>{$row->Verein}</strong></td>";
-			echo "<td>{$row->Spiele}</td><td>{$row->Siege}</td><td>{$row->Unentschieden}</td><td>{$row->Niederlagen}</td>";
-			echo "<td>{$row->Plustore}</td><td>:</td><td>{$row->Minustore}</td>";
-			$tordifferenz = $row->Plustore-$row->Minustore;
+			echo "<td>{$row->platz}</td><td class=\"textteam\"><strong>{$row->verein}</strong></td>";
+			echo "<td>{$row->spiele}</td><td>{$row->siege}</td><td>{$row->unentschieden}</td><td>{$row->niederlagen}</td>";
+			echo "<td>{$row->plustore}</td><td>:</td><td>{$row->minustore}</td>";
+			$tordifferenz = $row->plustore-$row->minustore;
 			echo "<td>{$tordifferenz}</td>";
-			echo "<td><strong>{$row->Pluspunkte}</strong></td><td>:</td><td><strong>{$row->Minuspunkte}</strong></td></tr>\n";
+			echo "<td><strong>{$row->pluspunkte}</strong></td><td>:</td><td><strong>{$row->minuspunkte}</strong></td></tr>\n";
 		}
 	echo "</tbody>";
 	echo "</table>\n";
 	
 	if ($posLeague == 'underneath') echo '<p>Spielklasse: '.$mannschaft->liga.' ('.$mannschaft->ligaKuerzel.')</p>';
 	
-		echo $data;
+
 	
 	
 }

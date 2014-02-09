@@ -13,7 +13,7 @@ $headline = $params->get('headline');
 $menuitemid = JRequest::getInt('Itemid');
 if ($menuitemid)
 {
-	$menu = JSite::getMenu();
+	$menu = JFactory::getApplication()->getMenu();
 	$menuparams = $menu->getParams( $menuitemid );
 }
 $kuerzel = $menuparams->get('teamkey');

@@ -1,5 +1,11 @@
 table.HBstandings {
 	width: 90%;
+	margin-bottom: 0.2em;
+	}
+
+table.HBstandings+p {
+	margin-left: 1em;
+	color: #999;
 	}
 
 table.HBstandings td,
@@ -20,18 +26,18 @@ table.HBstandings.HBhighlight tr:hover a:link {
 	}	
 	
 table.HBstandings.HBhighlight tr.heim td {
-	background: #23B;
-	color: #fff;
+	background: #ccc;
+	//color: #fff;
 	cursor: default;
 	}
 	
 
 table.HBstandings th {
-	text-align: center;
+	text-align: left;
 	}
 
 table.HBstandings td {
-	text-align: right;
+	text-align: left;
 	}
 
 table.HBstandings .textteam {

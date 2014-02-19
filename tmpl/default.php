@@ -38,7 +38,7 @@ if ($tabelleTableExists)
 	echo "<tbody>";
 		foreach ($rows as $row) {
 			// switch color of background
-			if (!empty($row->Platz)) $background = !$background;
+			if (!empty($row->platz)) $background = !$background;
 			// check value of background
 			switch ($background) {
 				case true: $backgroundColor = 'odd'; break;

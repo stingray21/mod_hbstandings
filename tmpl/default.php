@@ -12,41 +12,26 @@ if ($tabelleTableExists)
 	//echo "<p>".JText::_('DESC_MODULE')."</p>";
 	
 	// Headline
-	echo '<h3>';
-	switch ($headline)
-	{
-		case 'title':
-			echo 'Tabelle';
-			break;
-		case 'not':
-			break;
-		case 'title':
-		default:
-			echo 'Tabelle - '.$mannschaft->mannschaft;
-			break;
+	if (!empty($headline)){
+		echo '<h3>'.$headline.'</h3>';
 	}
-	echo '</h3>';
 	
-	if ($posLeague == 'above') echo '<p>Spielklasse: '.$mannschaft->liga.' ('.$mannschaft->ligaKuerzel.')</p>';
+	if ($posLeague == 'above') {
+		echo '<p>Spielklasse: '.$team->liga.' ('.$team->ligaKuerzel.')</p>';
+	}
 	
-	$background = false;
 	echo "<table class=\"HBstandings HBhighlight\">";
 	echo "<thead>";
-	echo "<tr><th>Platz</th><th class=\"textteam\">Mannschaft</th><th>Sp.</th><th>S</th><th>U</th><th>N</th><th colspan=\"3\">Tore</th><th>Diff.</th><th colspan=\"3\">Punkte</th></tr>";
+	echo "<tr><th>Platz</th><th class=\"textteam\">Mannschaft</th>"
+		. "<th>Sp.</th><th>S</th><th>U</th><th>N</th><th colspan=\"3\">Tore</th>"
+		. "<th>Diff.</th><th colspan=\"3\">Punkte</th></tr>";
 	echo "</thead>\n";
 	
 	echo "<tbody>";
-		foreach ($rows as $row) {
-			// switch color of background
-			if (!empty($row->platz)) $background = !$background;
-			// check value of background
-			switch ($background) {
-				case true: $backgroundColor = 'odd'; break;
-				case false: $backgroundColor = 'even'; break;
-			}
+		foreach ($standings as $row) {
 			// row in HBtabelle table
-			echo "<tr class=\"{$backgroundColor}";
-			if ($highlightHomeTeam) echo markHeimInTabelle($row->verein, $mannschaft->name);
+			echo "<tr class=\"{$row->background}";
+			if ($row->heimVerein) echo ' heim';
 			echo "\">";
 			echo "<td>{$row->platz}</td><td class=\"textteam\"><strong>{$row->verein}</strong></td>";
 			echo "<td>{$row->spiele}</td><td>{$row->siege}</td><td>{$row->unentschieden}</td><td>{$row->niederlagen}</td>";
@@ -58,9 +43,8 @@ if ($tabelleTableExists)
 	echo "</tbody>";
 	echo "</table>\n";
 	
-	if ($posLeague == 'underneath') echo '<p>Spielklasse: '.$mannschaft->liga.' ('.$mannschaft->ligaKuerzel.')</p>';
-	
-
-	
+	if ($posLeague == 'underneath') {
+		echo '<p>Spielklasse: '.$team->liga.' ('.$team->ligaKuerzel.')</p>';
+	}
 	
 }

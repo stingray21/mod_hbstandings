@@ -1,56 +1,241 @@
-
 <?php
 //No access
 defined( '_JEXEC' ) or die;
 
-
-
-//Add database instance
-$db = JFactory::getDBO();
-$jAp = JFactory::getApplication();
-
-// getting further Information of the team
-$query = $db->getQuery(true);
-$query->select('*');
-$query->from($db->quoteName('hb_mannschaft'));
-$query->where($db->quoteName('kuerzel').' = '.$db->quote($kuerzel));
-$db->setQuery($query);
-$mannschaft = $db->loadObject();
-//echo nl2br($query);//die; //see resulting query
-//display and convert to HTML when SQL error
-if (is_null($posts=$db->loadRowList())) 
+class modHbStandingsHelper
 {
-	$jAp->enqueueMessage(nl2br($db->getErrorMsg()),'error');
-	return;
-}
-
-
-// getting standings of the team from the DB
-$query = $db->getQuery(true);
-$query->select('*');
-$query->from($db->qn('hb_tabelle'));
-$query->where($db->qn('kuerzel').' = '.$db->q($kuerzel));
-$query->order($db->qn('platz'));
-//echo nl2br($query);//die; //see resulting query
-$db->setQuery($query);
-$rows = $db->loadObjectList();
-//echo "<pre>"; print_r($rows); echo "</pre>";
-//display and convert to HTML when SQL error
-if (is_null($posts=$db->loadRowList()))
-{
-	$jAp->enqueueMessage(nl2br($db->getErrorMsg()),'error');
-	return;
-}
-
-function markHeimInTabelle($mannschaft, $heim, $class = false)
-{
-	if (strcmp(trim($mannschaft), trim($heim)) == 0)
+	public static function getTeam ($teamkey)
 	{
-		if ($class == true)
+		$db = JFactory::getDBO();
+		// getting further Information of the team
+		$query = $db->getQuery(true);
+		$query->select('*');
+		$query->from($db->quoteName('hb_mannschaft'));
+		$query->where($db->quoteName('kuerzel').' = '.$db->quote($teamkey));
+		$db->setQuery($query);
+		$team = $db->loadObject();
+		//echo nl2br($query);//die; //see resulting query
+		//display and convert to HTML when SQL error
+		if (is_null($posts=$db->loadRowList())) 
 		{
-			return " class=\"heim\"";
+			$jAp->enqueueMessage(nl2br($db->getErrorMsg()),'error');
+			return;
 		}
-		return " heim";
+		return $team;
 	}
-	return '';
+	
+	public static function getHeadline($option, $team)
+	{
+		switch ($option)
+		{
+			case 'title':
+				return 'Tabelle';
+			case 'not':
+				return null;
+			case 'title':
+			default:
+				return 'Tabelle - '.$team->mannschaft;
+		}
+	}
+	
+	public static function getStandings($team)
+	{
+		$db = JFactory::getDBO();
+		// getting standings of the team from the DB
+		$query = $db->getQuery(true);
+		$query->select('*, '.
+			'IF('.$db->qn('verein').'='.$db->q($team->name).',1,0) AS heimVerein');
+		$query->from($db->qn('hb_tabelle'));
+		$query->where($db->qn('kuerzel').' = '.$db->q($team->kuerzel));
+		$query->order($db->qn('platz'));
+		//echo nl2br($query);//die; //see resulting query
+		$db->setQuery($query);
+		$standings = $db->loadObjectList();
+		//echo "<pre>"; print_r($standings); echo "</pre>";
+		//display and convert to HTML when SQL error
+		if (is_null($posts=$db->loadRowList()))
+		{
+			$jAp->enqueueMessage(nl2br($db->getErrorMsg()),'error');
+			return;
+		}
+		$standings = self::addBackground($standings);
+		return $standings;
+	}
+	
+	protected static function addBackground ($standings)
+	{
+		$background = false;
+		foreach ($standings as $row)
+		{
+			// switch color of background
+			if (!empty($row->platz)) $background = !$background;
+			// check value of background
+			switch ($background) {
+				case true: $row->background = 'odd'; break;
+				case false: $row->background = 'even'; break;
+			}
+		}
+		return $standings;
+	}
+
+	
+
+	public function getRanking()
+	{
+		$db = $this->getDbo();
+		$query = "SELECT 
+			mannschaft,
+
+			COUNT(IF(s.hTore IS NOT NULL, s.hTore, 0)) spiele, 
+			SUM(IF(w='H', 1, 0)) spieleHeim, 
+			SUM(IF(w='A', 1, 0)) spieleGast, 
+
+			SUM( 
+			CASE 
+			WHEN s.hTore > s.gTore THEN 2 
+			WHEN s.hTore = s.gTore THEN 1 
+			ELSE 0 
+			END) punkte, 
+
+			SUM( 
+			CASE 
+			WHEN w = 'H' AND s.hTore > s.gTore THEN 2 
+			WHEN w = 'H' AND s.hTore = s.gTore THEN 1 
+			ELSE 0 
+			END) punkteHeim, 
+
+			SUM( 
+			CASE 
+			WHEN w = 'A' AND s.hTore > s.gTore THEN 2 
+			WHEN w = 'A' AND s.hTore = s.gTore THEN 1 
+			ELSE 0 
+			END) punkteGast, 
+
+			SUM( 
+			CASE 
+			WHEN s.hTore < s.gTore THEN 2 
+			WHEN s.hTore = s.gTore THEN 1 
+			ELSE 0 
+			END) nPunkte, 
+
+			SUM( 
+			CASE 
+			WHEN w = 'H' AND s.hTore < s.gTore THEN 2 
+			WHEN w = 'H' AND s.hTore = s.gTore THEN 1 
+			ELSE 0  
+			END) nPunkteHeim, 
+
+			SUM( 
+			CASE 
+			WHEN w = 'A' AND s.hTore < s.gTore THEN 2 
+			WHEN w = 'A' AND s.hTore = s.gTore THEN 1 
+			ELSE 0  
+			END) nPunkteGast,
+
+			SUM(IF(s.hTore > s.gTore, 1, 0)) s, 
+			SUM(IF(w = 'H' AND s.hTore > s.gTore, 1, 0)) sHeim, 
+			SUM(IF(w = 'A' AND s.hTore > s.gTore, 1, 0)) sGast, 
+
+
+			SUM(IF(s.hTore = s.gTore, 1, 0)) u, 
+			SUM(IF(w = 'H' AND s.hTore = s.gTore, 1, 0)) uHeim, 
+			SUM(IF(w = 'A' AND s.hTore = s.gTore, 1, 0)) uGast, 
+
+
+			SUM(IF(s.hTore < s.gTore, 1, 0)) n, 
+			SUM(IF(w = 'H' AND s.hTore < s.gTore, 1, 0)) nHeim, 
+			SUM(IF(w = 'A' AND s.hTore < s.gTore, 1, 0)) nGast, 
+
+
+			SUM(IF(s.hTore IS NOT NULL, s.hTore, 0)) AS tore, 
+			SUM(IF(w = 'H', s.hTore, 0)) AS toreHeim, 
+			SUM(IF(w = 'A', s.hTore, 0)) AS toreGast, 
+
+			SUM(IF(s.hTore IS NOT NULL, s.gTore, 0)) AS gegenTore, 
+			SUM(IF(w = 'H', s.gTore, 0)) AS gegenToreHeim, 
+			SUM(IF(w = 'A', s.gTore, 0)) AS gegenToreGast,	
+
+			SUM(IF(s.hTore IS NOT NULL, s.hTore-s.gTore, 0)) AS diff,
+			SUM(IF(w = 'H', s.hTore-s.gTore, 0)) AS diffHeim,
+			SUM(IF(w = 'A', s.hTore-s.gTore, 0)) AS diffGast
+
+			FROM ( 
+				SELECT heim as mannschaft 
+				FROM hbdata_m1_spielplan 
+				GROUP BY mannschaft
+				) AS m
+			LEFT JOIN
+			(SELECT 
+			'H' w, 
+			s1.datum datum,
+			s1.heim mannschaft, 
+			s1.gast gegner, 
+			s1.toreHeim hTore, 
+			s1.toreGast gTore
+			FROM hbdata_m1_spielplan s1 
+			WHERE s1.toreHeim IS NOT NULL
+
+			UNION 
+
+			SELECT 
+			'A' w,
+			s2.datum datum,
+			s2.gast mannschaft, 
+			s2.heim gegner, 
+			s2.toreGast hTore, 
+			s2.toreHeim gTore 
+			FROM hbdata_m1_spielplan s2 
+			WHERE s2.toreHeim IS NOT NULL
+			) AS s USING (mannschaft)
+
+			GROUP BY mannschaft 
+			ORDER BY punkte DESC, s DESC, diff DESC";
+		//echo "<a>ModelHB->query: </a><pre>"; echo $query; echo "</pre>";
+		$db->setQuery($query);
+		$result = $db->loadObjectList();
+		echo '<pre>';print_r($result);echo'</pre>';
+		return $result;
+	}
+	
+	protected function getHead2Head($team, $opponent, $table)
+	{
+		$db = $this->getDbo();
+		$query = "SELECT 
+			mannschaft, gegner, 
+			SUM(tore - gtore) as diff, 
+			SUM(IF(w = 'A', tore, 0)) - SUM(IF(w = 'H', gtore, 0)) AS ausTorDiff
+			FROM 
+			(SELECT 
+			'H' w, 
+			s1.datum datum,
+			s1.heim mannschaft, 
+			s1.gast gegner, 
+			s1.toreHeim tore, 
+			s1.toreGast gtore
+			FROM hbdata_m1_spielplan s1 
+			WHERE heim='TSV Geislingen' and gast='SG Tail/Trucht'
+
+			UNION 
+
+			SELECT 
+			'A' w,
+			s2.datum datum,
+			s2.gast mannschaft, 
+			s2.heim gegner, 
+			s2.toreGast tore, 
+			s2.toreHeim gTore 
+			FROM hbdata_m1_spielplan s2 
+			WHERE gast='TSV Geislingen' and heim='SG Tail/Trucht'
+			) AS s 
+
+			GROUP BY mannschaft";
+		//echo "<a>ModelHB->query: </a><pre>"; echo $query; echo "</pre>";
+		$db->setQuery($query);
+		$result = $db->loadObject();
+		echo '<pre>';print_r($result);echo'</pre>';
+		return $result;
+	}
+
 }
+
+

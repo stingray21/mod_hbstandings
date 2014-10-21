@@ -80,9 +80,9 @@ class modHbStandingsHelper
 
 	
 
-	public function getRanking()
+	public static function getRanking($team)
 	{
-		$db = $this->getDbo();
+		$db = JFactory::getDBO();
 		$query = "SELECT 
 			mannschaft,
 
@@ -161,31 +161,32 @@ class modHbStandingsHelper
 
 			FROM ( 
 				SELECT heim as mannschaft 
-				FROM hbdata_m1_spielplan 
+				FROM hb_spiel
+				WHERE kuerzel = ".$db->q($team->kuerzel)."
 				GROUP BY mannschaft
 				) AS m
 			LEFT JOIN
 			(SELECT 
 			'H' w, 
-			s1.datum datum,
+			s1.datumZeit datumZeit,
 			s1.heim mannschaft, 
 			s1.gast gegner, 
 			s1.toreHeim hTore, 
 			s1.toreGast gTore
-			FROM hbdata_m1_spielplan s1 
-			WHERE s1.toreHeim IS NOT NULL
+			FROM hb_spiel s1 
+			WHERE s1.toreHeim IS NOT NULL && kuerzel = ".$db->q($team->kuerzel)."
 
 			UNION 
 
 			SELECT 
 			'A' w,
-			s2.datum datum,
+			s2.datumZeit datumZeit,
 			s2.gast mannschaft, 
 			s2.heim gegner, 
 			s2.toreGast hTore, 
 			s2.toreHeim gTore 
-			FROM hbdata_m1_spielplan s2 
-			WHERE s2.toreHeim IS NOT NULL
+			FROM hb_spiel s2 
+			WHERE s2.toreHeim IS NOT NULL && kuerzel = ".$db->q($team->kuerzel)."
 			) AS s USING (mannschaft)
 
 			GROUP BY mannschaft 
@@ -193,13 +194,13 @@ class modHbStandingsHelper
 		//echo "<a>ModelHB->query: </a><pre>"; echo $query; echo "</pre>";
 		$db->setQuery($query);
 		$result = $db->loadObjectList();
-		echo '<pre>';print_r($result);echo'</pre>';
+		//echo '<pre>';print_r($result);echo'</pre>';
 		return $result;
 	}
 	
-	protected function getHead2Head($team, $opponent, $table)
+	protected static function getHead2Head($team, $opponent, $table)
 	{
-		$db = $this->getDbo();
+		$db = JFactory::getDBO();
 		$query = "SELECT 
 			mannschaft, gegner, 
 			SUM(tore - gtore) as diff, 

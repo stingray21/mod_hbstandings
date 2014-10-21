@@ -27,6 +27,8 @@ $team = modHbStandingsHelper::getTeam($teamkey);
 $headline = modHbStandingsHelper::getHeadline($headlineOption, $team);
 $standings = modHbStandingsHelper::getStandings($team);
 //echo '<p>standings</p><pre>'; print_r($standings); echo '</pre>';
+$ranking = modHbStandingsHelper::getRanking($team);
+//echo '<p>ranking</p><pre>'; print_r($ranking); echo '</pre>';
 
 //Returns the path of the layout file
 require JModuleHelper::getLayoutPath('mod_hbstandings', $params->get('layout', 'default'));

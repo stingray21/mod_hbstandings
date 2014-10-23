@@ -160,33 +160,34 @@ class modHbStandingsHelper
 			SUM(IF(w = 'A', s.hTore-s.gTore, 0)) AS diffGast
 
 			FROM ( 
-				SELECT heim as mannschaft 
+				SELECT heim as mannschaft, kuerzel 
 				FROM hb_spiel
 				WHERE kuerzel = ".$db->q($team->kuerzel)."
 				GROUP BY mannschaft
 				) AS m
 			LEFT JOIN
-			(SELECT 
-			'H' w, 
-			s1.datumZeit datumZeit,
-			s1.heim mannschaft, 
-			s1.gast gegner, 
-			s1.toreHeim hTore, 
-			s1.toreGast gTore
-			FROM hb_spiel s1 
-			WHERE s1.toreHeim IS NOT NULL && kuerzel = ".$db->q($team->kuerzel)."
+			(
+				SELECT 
+				'H' w, 
+				s1.datumZeit datumZeit,
+				s1.heim mannschaft, 
+				s1.gast gegner, 
+				s1.toreHeim hTore, 
+				s1.toreGast gTore
+				FROM hb_spiel s1 
+				WHERE s1.toreHeim IS NOT NULL && kuerzel = ".$db->q($team->kuerzel)."
 
-			UNION 
+				UNION 
 
-			SELECT 
-			'A' w,
-			s2.datumZeit datumZeit,
-			s2.gast mannschaft, 
-			s2.heim gegner, 
-			s2.toreGast hTore, 
-			s2.toreHeim gTore 
-			FROM hb_spiel s2 
-			WHERE s2.toreHeim IS NOT NULL && kuerzel = ".$db->q($team->kuerzel)."
+				SELECT 
+				'A' w,
+				s2.datumZeit datumZeit,
+				s2.gast mannschaft, 
+				s2.heim gegner, 
+				s2.toreGast hTore, 
+				s2.toreHeim gTore 
+				FROM hb_spiel s2 
+				WHERE s2.toreHeim IS NOT NULL && kuerzel = ".$db->q($team->kuerzel)."
 			) AS s USING (mannschaft)
 
 			GROUP BY mannschaft 
@@ -198,7 +199,57 @@ class modHbStandingsHelper
 		return $result;
 	}
 	
-	protected static function getHead2Head($team, $opponent, $table)
+	public static function test($ranking, $teamkey)
+	{
+		self::getHead2Head($ranking[4], $ranking[6], $teamkey);
+	}
+	
+	public static function sortRanking($ranking, $teamkey)
+	{
+		foreach ($ranking as $team)
+		{
+			if (empty($standings))
+			{
+				$team->rank = 1;
+				$standings[] = $team;
+			}
+			else
+			{
+				$standings = self::insertInStandings ($standings, $team);				
+			}
+		}
+		//echo '<pre>';print_r($standings);echo'</pre>';
+		return $standings;
+	}
+	
+	protected static function insertInStandings ($standings, $team)
+	{
+		$pos = null;
+		foreach ($standings as $key => $row)
+		{				
+			if ($team->punkte > $row->punkte) {
+				$team->rank = $row->rank;
+				$row->rank++;
+				$pos = $key;
+				break;
+			}
+			elseif ($team->punkte == $row->punkte) {
+				$team->rank = $row->rank;
+				$row->rank;
+				$pos = $key+1;
+				break;
+			}
+			else {
+				$team->rank = $row->rank+1;
+				$pos = count($standings);
+			}	
+		}
+		echo '<pre>';print_r($pos);echo'</pre>';
+		array_splice( $standings, $pos, 0, array($team) );
+		return $standings;
+	}
+
+	protected static function getHead2Head($team, $opponent, $teamkey)
 	{
 		$db = JFactory::getDBO();
 		$query = "SELECT 
@@ -208,25 +259,29 @@ class modHbStandingsHelper
 			FROM 
 			(SELECT 
 			'H' w, 
-			s1.datum datum,
+			DATE(s1.datumZeit) datum,
 			s1.heim mannschaft, 
 			s1.gast gegner, 
 			s1.toreHeim tore, 
 			s1.toreGast gtore
-			FROM hbdata_m1_spielplan s1 
-			WHERE heim='TSV Geislingen' and gast='SG Tail/Trucht'
+			FROM hb_spiel s1 
+			WHERE heim=".$db->q($team->mannschaft)."
+			AND gast=".$db->q($opponent->mannschaft)."
+			AND kuerzel=".$db->q($teamkey)." 
 
 			UNION 
 
 			SELECT 
 			'A' w,
-			s2.datum datum,
+			DATE(s2.datumZeit) datum,
 			s2.gast mannschaft, 
 			s2.heim gegner, 
 			s2.toreGast tore, 
 			s2.toreHeim gTore 
-			FROM hbdata_m1_spielplan s2 
-			WHERE gast='TSV Geislingen' and heim='SG Tail/Trucht'
+			FROM hb_spiel s2 
+			WHERE gast=".$db->q($team->mannschaft)."
+			AND heim=".$db->q($opponent->mannschaft)."
+			AND kuerzel=".$db->q($teamkey)." 
 			) AS s 
 
 			GROUP BY mannschaft";

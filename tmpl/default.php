@@ -62,6 +62,28 @@ echo "<tbody>";
 echo "</tbody>";
 echo "</table>\n";
 
+echo "<table class=\"HBstandings HBhighlight\">";
+echo "<thead>";
+echo "<tr><th>Platz</th><th class=\"textteam\">Mannschaft</th>"
+	. "<th>Sp.</th><th>S</th><th>U</th><th>N</th><th colspan=\"3\">Tore</th>"
+	. "<th>Diff.</th><th colspan=\"3\">Punkte</th></tr>";
+echo "</thead>\n";
+
+echo "<tbody>";
+	foreach ($rankingSorted as $index => $row) {
+		// row in HBtabelle table
+		echo "<tr";// class=\"{$row->background}";
+		//if ($row->heimVerein) echo ' heim';
+		echo "\">";
+		echo "<td>{$row->rank}</td><td class=\"textteam\"><strong>{$row->mannschaft}</strong></td>";
+		echo "<td>{$row->spiele}</td><td>{$row->s}</td><td>{$row->u}</td><td>{$row->n}</td>";
+		echo "<td>{$row->tore}</td><td>:</td><td>{$row->gegenTore}</td>";
+		echo "<td>{$row->diff}</td>";
+		echo "<td><strong>{$row->punkte}</strong></td><td>:</td><td><strong>{$row->nPunkte}</strong></td></tr>\n";
+	}
+echo "</tbody>";
+echo "</table>\n";
+
 if ($posLeague == 'underneath') {
 	echo '<p>Spielklasse: '.$team->liga.' ('.$team->ligaKuerzel.')</p>';
 }

@@ -201,22 +201,15 @@ class modHbStandingsHelper
 	
 	public static function test($ranking, $teamkey)
 	{
-		self::getHead2Head($ranking[4], $ranking[6], $teamkey);
+		self::getDirectComparison($ranking[4], $ranking[6], $teamkey);
 	}
 	
 	public static function sortRanking($ranking, $teamkey)
 	{
+		$standings = array();
 		foreach ($ranking as $team)
 		{
-			if (empty($standings))
-			{
-				$team->rank = 1;
-				$standings[] = $team;
-			}
-			else
-			{
-				$standings = self::insertInStandings ($standings, $team);				
-			}
+			$standings = self::insertInStandings ($standings, $team);
 		}
 		//echo '<pre>';print_r($standings);echo'</pre>';
 		return $standings;
@@ -224,32 +217,63 @@ class modHbStandingsHelper
 	
 	protected static function insertInStandings ($standings, $team)
 	{
-		$pos = null;
+		$pos = 0;
+		$rank = 1;
+		$inserted = false;
+		$addRank = false;
+		
 		foreach ($standings as $key => $row)
 		{				
-			if ($team->punkte > $row->punkte) {
-				$team->rank = $row->rank;
+			if (!$inserted) {
+				// if more 'punkte' than current element, insert and move current
+				if ($team->punkte > $row->punkte) {
+					$pos = $key;
+					$inserted = true;
+					$addRank = true;
+				}
+				// if 'punkte' equal than current element, call compare function
+				elseif ($team->punkte == $row->punkte) {
+					//self::compareTiedTeams ($team, $row, $key, $teamkey);
+					$pos = $key;
+					$inserted = true;
+				}
+				else {
+					$pos++;
+					$rank++;
+				}
+			}
+			if ($rank < $row->rank || $addRank) {
 				$row->rank++;
-				$pos = $key;
-				break;
 			}
-			elseif ($team->punkte == $row->punkte) {
-				$team->rank = $row->rank;
-				$row->rank;
-				$pos = $key+1;
-				break;
-			}
-			else {
-				$team->rank = $row->rank+1;
-				$pos = count($standings);
-			}	
+			
 		}
-		echo '<pre>';print_r($pos);echo'</pre>';
+		$team->rank = $rank;
+		//echo '<pre>';print_r($pos);echo'</pre>';
 		array_splice( $standings, $pos, 0, array($team) );
 		return $standings;
 	}
 
-	protected static function getHead2Head($team, $opponent, $teamkey)
+	protected static function compareTiedTeams ($team, $row, $teamkey) 
+	{
+		//echo '<pre>';print_r($team);echo'</pre>';
+		//echo '<pre>';print_r($row);echo'</pre>';
+		// negative points
+		if ($team->nPunkte < $row->nPunkte) {
+			$ret->rank = $row->rank;
+			$ret->addRank = 1;
+			$ret->pos = $key;			
+			return $ret; // better
+		}
+		elseif ($team->nPunkte == $row->nPunkte) {
+			$directComparison = self::getDirectComparison($team, $row, $teamkey);
+			return 0; // equal
+		}
+		else {
+			return -1; //worse
+		}
+	}
+	
+	protected static function getDirectComparison($team, $opponent, $teamkey)
 	{
 		$db = JFactory::getDBO();
 		$query = "SELECT 

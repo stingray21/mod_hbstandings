@@ -199,23 +199,20 @@ class modHbStandingsHelper
 		return $result;
 	}
 	
-	public static function test($ranking, $teamkey)
-	{
-		self::getDirectComparison($ranking[4], $ranking[6], $teamkey);
-	}
-	
 	public static function sortRanking($ranking, $teamkey)
 	{
+//		echo "<a>teamkey: </a><pre>".$teamkey."</pre>";
 		$standings = array();
 		foreach ($ranking as $team)
 		{
-			$standings = self::insertInStandings ($standings, $team);
+			echo '<br/>'.$team->mannschaft;
+			$standings = self::insertInStandings ($standings, $team, $teamkey);
 		}
 		//echo '<pre>';print_r($standings);echo'</pre>';
 		return $standings;
 	}
 	
-	protected static function insertInStandings ($standings, $team)
+	protected static function insertInStandings ($standings, $team, $teamkey)
 	{
 		$pos = 0;
 		$rank = 1;
@@ -225,15 +222,16 @@ class modHbStandingsHelper
 		foreach ($standings as $key => $row)
 		{				
 			if (!$inserted) {
+				$compare = self::compareTeams ($team, $row, $teamkey);
+				echo '->'.$compare;
 				// if more 'punkte' than current element, insert and move current
-				if ($team->punkte > $row->punkte) {
+				if ($compare === 1) {
 					$pos = $key;
 					$inserted = true;
 					$addRank = true;
 				}
 				// if 'punkte' equal than current element, call compare function
-				elseif ($team->punkte == $row->punkte) {
-					//self::compareTiedTeams ($team, $row, $key, $teamkey);
+				elseif ($compare === 0) {
 					$pos = $key;
 					$inserted = true;
 				}
@@ -253,24 +251,25 @@ class modHbStandingsHelper
 		return $standings;
 	}
 
-	protected static function compareTiedTeams ($team, $row, $teamkey) 
+	protected static function compareTeams ($team, $row, $teamkey) 
 	{
 		//echo '<pre>';print_r($team);echo'</pre>';
 		//echo '<pre>';print_r($row);echo'</pre>';
-		// negative points
-		if ($team->nPunkte < $row->nPunkte) {
-			$ret->rank = $row->rank;
-			$ret->addRank = 1;
-			$ret->pos = $key;			
-			return $ret; // better
+		//echo "<a>teamkey: </a><pre>".$teamkey."</pre>";
+		if ($team->punkte > $row->punkte) {
+			return 1;
 		}
-		elseif ($team->nPunkte == $row->nPunkte) {
-			$directComparison = self::getDirectComparison($team, $row, $teamkey);
-			return 0; // equal
+		elseif ($team->punkte == $row->punkte) {
+			if ($team->nPunkte < $row->nPunkte) {
+				return 1;
+			}
+			elseif ($team->nPunkte == $row->nPunkte) {
+				//return self::getDirectComparison($team, $row, $teamkey);
+				return 0;
+			}
+			return -1;
 		}
-		else {
-			return -1; //worse
-		}
+		return -1;
 	}
 	
 	protected static function getDirectComparison($team, $opponent, $teamkey)
@@ -278,8 +277,24 @@ class modHbStandingsHelper
 		$db = JFactory::getDBO();
 		$query = "SELECT 
 			mannschaft, gegner, 
-			SUM(tore - gtore) as diff, 
-			SUM(IF(w = 'A', tore, 0)) - SUM(IF(w = 'H', gtore, 0)) AS ausTorDiff
+			SUM(tore - gtore) AS diff, 
+			SUM(IF(w = 'A', tore, 0)) - SUM(IF(w = 'H', gtore, 0)) AS ausTorDiff,
+			CASE 
+				WHEN SUM(tore - gtore) > 0 
+					THEN 1
+				WHEN SUM(tore - gtore) < 0 
+					THEN -1
+				WHEN SUM(tore - gtore) = 0 
+					THEN CASE
+						WHEN SUM(IF(w='A', tore, 0)) - SUM(IF(w='H', gtore, 0)) > 0
+							THEN 1
+						WHEN SUM(IF(w='A', tore, 0)) - SUM(IF(w='H', gtore, 0)) < 0 
+							THEN -1
+						WHEN SUM(IF(w='A', tore, 0)) - SUM(IF(w='H', gtore, 0)) = 0 
+							THEN 0	
+					END
+				ELSE 0
+			END AS direct
 			FROM 
 			(SELECT 
 			'H' w, 
@@ -309,11 +324,11 @@ class modHbStandingsHelper
 			) AS s 
 
 			GROUP BY mannschaft";
-		//echo "<a>ModelHB->query: </a><pre>"; echo $query; echo "</pre>";
+//		echo "<a>ModelHB->query: </a><pre>"; echo $query; echo "</pre>";
 		$db->setQuery($query);
 		$result = $db->loadObject();
-		echo '<pre>';print_r($result);echo'</pre>';
-		return $result;
+		echo '<pre>direct comparison: ';print_r($result);echo'</pre>';
+		return (int) $result->direct;
 	}
 
 }

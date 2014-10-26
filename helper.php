@@ -212,46 +212,98 @@ class modHbStandingsHelper
 		return $standings;
 	}
 	
+	public static function sortRanking2($ranking, $teamkey)
+	{
+//		echo "<a>teamkey: </a><pre>".$teamkey."</pre>";
+		$standings = array();
+		foreach ($ranking as $team)
+		{
+			echo '<br/>'.$team->mannschaft;
+			$standings = self::insertInStandings2 ($standings, $team, $teamkey);
+		}
+		//echo '<pre>';print_r($standings);echo'</pre>';
+		return $standings;
+	}
+	
 	protected static function insertInStandings ($standings, $team, $teamkey)
 	{
 		$pos = 0;
-		$rank = 1;
+		$currRank = null;
 		$inserted = false;
-		$addRank = false;
-		
+		$team->rank = 1;
+		$team->direct = null;
 		foreach ($standings as $key => $row)
 		{				
 			if (!$inserted) {
-				$compare = self::compareTeams ($team, $row, $teamkey);
+				$compare = self::comparePoints ($team, $row);
 				echo '->'.$compare;
 				// if more 'punkte' than current element, insert and move current
 				if ($compare === 1) {
-					$pos = $key;
 					$inserted = true;
-					$addRank = true;
+					$currRank = $row->rank;
 				}
 				// if 'punkte' equal than current element, call compare function
 				elseif ($compare === 0) {
-					$pos = $key;
-					$inserted = true;
+					$direct = self::compareDirect($team, $row, $teamkey);
+					$row->direct = $row->direct + (-1*$direct);
+					$team->direct = $team->direct + $direct;
+//					echo $row->mannschaft.'->'.$row->direct.'<br/>';
+//					echo $team->mannschaft.'->'.$team->direct.'<br/>';
+					$pos++;
 				}
 				else {
 					$pos++;
-					$rank++;
+					$team->rank = $pos+1;
 				}
 			}
-			if ($rank < $row->rank || $addRank) {
+			if (!empty($currRank) && $currRank <= $row->rank) {
 				$row->rank++;
 			}
 			
 		}
-		$team->rank = $rank;
+		
 		//echo '<pre>';print_r($pos);echo'</pre>';
 		array_splice( $standings, $pos, 0, array($team) );
 		return $standings;
 	}
-
-	protected static function compareTeams ($team, $row, $teamkey) 
+	
+	protected static function insertInStandings2 ($standings, $team, $teamkey)
+	{
+		$pos = 0;
+		$currRank = null;
+		$inserted = false;
+		$team->rank = 1;
+		foreach ($standings as $key => $row)
+		{				
+			if (!$inserted) {
+				$compare = self::comparePoints ($team, $row);
+				echo '->'.$compare;
+				// if more 'punkte' than current element, insert and move current
+				if ($compare === 1) {
+					$inserted = true;
+					$currRank = $row->rank;
+				}
+				// if 'punkte' equal than current element, call compare function
+				elseif ($compare === 0) {
+					$pos++;
+				}
+				else {
+					$pos++;
+					$team->rank = $pos+1;
+				}
+			}
+			if (!empty($currRank) && $currRank <= $row->rank) {
+				$row->rank++;
+			}
+			
+		}
+		
+		//echo '<pre>';print_r($pos);echo'</pre>';
+		array_splice( $standings, $pos, 0, array($team) );
+		return $standings;
+	}
+	
+	protected static function comparePoints ($team, $row) 
 	{
 		//echo '<pre>';print_r($team);echo'</pre>';
 		//echo '<pre>';print_r($row);echo'</pre>';
@@ -264,15 +316,19 @@ class modHbStandingsHelper
 				return 1;
 			}
 			elseif ($team->nPunkte == $row->nPunkte) {
-				//return self::getDirectComparison($team, $row, $teamkey);
-				return 0;
+				if ($team->direct > $row->direct) {
+					return 1;
+				}
+				elseif ($team->direct == $row->direct) {
+					echo $team->mannschaft.'->'.$team->direct.'|'.$row->direct.'<br/>';
+					return 0;
+				}
 			}
-			return -1;
 		}
 		return -1;
 	}
 	
-	protected static function getDirectComparison($team, $opponent, $teamkey)
+	protected static function  compareDirect($team, $opponent, $teamkey)
 	{
 		$db = JFactory::getDBO();
 		$query = "SELECT 
@@ -327,7 +383,7 @@ class modHbStandingsHelper
 //		echo "<a>ModelHB->query: </a><pre>"; echo $query; echo "</pre>";
 		$db->setQuery($query);
 		$result = $db->loadObject();
-		echo '<pre>direct comparison: ';print_r($result);echo'</pre>';
+		//echo '<pre>direct comparison: ';print_r($result);echo'</pre>';
 		return (int) $result->direct;
 	}
 

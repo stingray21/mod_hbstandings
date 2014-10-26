@@ -30,9 +30,9 @@ $standings = modHbStandingsHelper::getStandings($team);
 $ranking = modHbStandingsHelper::getRanking($team);
 //echo '<p>ranking</p><pre>'; print_r($ranking); echo '</pre>';
 shuffle($ranking);
-$rankingSorted = modHbStandingsHelper::sortRanking($ranking, $teamkey);
-echo '<p>rankingSorted</p><pre>'; print_r($rankingSorted); echo '</pre>';
-$rankingSorted2 = modHbStandingsHelper::sortRanking2($rankingSorted, $teamkey);
+$rankingSorted = modHbStandingsHelper::sortRanking($ranking, $teamkey, true);
+//echo '<p>rankingSorted</p><pre>'; print_r($rankingSorted); echo '</pre>';
+$rankingSorted2 = modHbStandingsHelper::sortRanking($rankingSorted, $teamkey);
 //echo '<p>ranking</p><pre>'; print_r($rankingSorted); echo '</pre>';
 
 

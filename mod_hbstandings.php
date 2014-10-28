@@ -32,8 +32,6 @@ $ranking = modHbStandingsHelper::getRanking($team);
 shuffle($ranking);
 $rankingSorted = modHbStandingsHelper::sortRanking($ranking, $teamkey, true);
 //echo '<p>rankingSorted</p><pre>'; print_r($rankingSorted); echo '</pre>';
-$rankingSorted2 = modHbStandingsHelper::sortRanking($rankingSorted, $teamkey);
-//echo '<p>ranking</p><pre>'; print_r($rankingSorted); echo '</pre>';
 
 
 //Returns the path of the layout file

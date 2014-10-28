@@ -202,12 +202,23 @@ class modHbStandingsHelper
 	public static function sortRanking($ranking, $teamkey, $directCompare = false)
 	{
 		//echo "<a>teamkey: </a><pre>".$teamkey."</pre>";
+		// iteration with adding direct compare flags
+		if ($directCompare) {
+			$standings = array();
+			foreach ($ranking as $team)
+			{
+				//echo '<br/>'.$team->mannschaft;
+				$standings = self::insertInStandings($standings, $team, $teamkey, true);
+			}
+		}
+		// iteration to sort a second time with direct compare, or first time without
 		$standings = array();
 		foreach ($ranking as $team)
 		{
 			//echo '<br/>'.$team->mannschaft;
-			$standings = self::insertInStandings ($standings, $team, $teamkey, $directCompare);
+			$standings = self::insertInStandings($standings, $team, $teamkey);
 		}
+		
 		//echo '<pre>';print_r($standings);echo'</pre>';
 		return $standings;
 	}
@@ -218,8 +229,8 @@ class modHbStandingsHelper
 		$currRank = null;
 		$inserted = false;
 		$team->rank = 1;
-		if ($directCompare) {
-			$direct = 0;
+		$direct = 0;
+		if (!isset($team->direct)) {
 			$team->direct = null;
 		}
 		foreach ($standings as $row)

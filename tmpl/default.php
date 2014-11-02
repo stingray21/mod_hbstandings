@@ -29,17 +29,16 @@ echo "<tbody>";
 		echo "<tr class=\"{$row->background}";
 		if ($row->heimVerein) echo ' heim';
 		echo "\">";
-		echo "<td>{$row->platz}</td><td class=\"textteam\"><strong>{$row->verein}</strong></td>";
+		echo "<td>{$row->platz}</td><td class=\"textteam\"><strong>{$row->mannschaft}</strong></td>";
 		echo "<td>{$row->spiele}</td><td>{$row->siege}</td><td>{$row->unentschieden}</td><td>{$row->niederlagen}</td>";
-		echo "<td>{$row->plustore}</td><td>:</td><td>{$row->minustore}</td>";
-		$tordifferenz = $row->plustore-$row->minustore;
-		echo "<td>{$tordifferenz}</td>";
-		echo "<td><strong>{$row->pluspunkte}</strong></td><td>:</td><td><strong>{$row->minuspunkte}</strong></td></tr>\n";
+		echo "<td>{$row->tore}</td><td>:</td><td>{$row->gegenTore}</td>";
+		echo "<td>{$row->torDifferenz}</td>";
+		echo "<td><strong>{$row->punkte}</strong></td><td>:</td><td><strong>{$row->minusPunkte}</strong></td></tr>\n";
 	}
 echo "</tbody>";
 echo "</table>\n";
 
-
+// DETAILED standings
 echo "<table class=\"HBstandings HBhighlight\">";
 echo "<thead>";
 echo "<tr><th>Platz</th><th class=\"textteam\">Mannschaft</th>"
@@ -48,43 +47,20 @@ echo "<tr><th>Platz</th><th class=\"textteam\">Mannschaft</th>"
 echo "</thead>\n";
 
 echo "<tbody>";
-	foreach ($ranking as $index => $row) {
+	foreach ($detailedStandings as $row) {
 		// row in HBtabelle table
-		echo "<tr";// class=\"{$row->background}";
-		//if ($row->heimVerein) echo ' heim';
+		echo "<tr class=\"{$row->background}";
+		if ($row->heimVerein) echo ' heim';
 		echo "\">";
-		echo "<td>{$index}</td><td class=\"textteam\"><strong>{$row->mannschaft}</strong></td>";
-		echo "<td>{$row->spiele}</td><td>{$row->s}</td><td>{$row->u}</td><td>{$row->n}</td>";
+		echo "<td>{$row->platz}</td><td class=\"textteam\"><strong>{$row->mannschaft}</strong></td>";
+		echo "<td>{$row->spiele}</td><td>{$row->siege}</td><td>{$row->unentschieden}</td><td>{$row->niederlagen}</td>";
 		echo "<td>{$row->tore}</td><td>:</td><td>{$row->gegenTore}</td>";
-		echo "<td>{$row->diff}</td>";
-		echo "<td><strong>{$row->punkte}</strong></td><td>:</td><td><strong>{$row->nPunkte}</strong></td></tr>\n";
+		echo "<td>{$row->torDifferenz}</td>";
+		echo "<td><strong>{$row->punkte}</strong></td><td>:</td><td><strong>{$row->minusPunkte}</strong></td></tr>\n";
 	}
 echo "</tbody>";
 echo "</table>\n";
 
-echo '<h4>Sorted</h4>';
-
-echo "<table class=\"HBstandings HBhighlight\">";
-echo "<thead>";
-echo "<tr><th>Platz</th><th class=\"textteam\">Mannschaft</th>"
-	. "<th>Sp.</th><th>S</th><th>U</th><th>N</th><th colspan=\"3\">Tore</th>"
-	. "<th>Diff.</th><th colspan=\"3\">Punkte</th></tr>";
-echo "</thead>\n";
-
-echo "<tbody>";
-	foreach ($rankingSorted as $index => $row) {
-		// row in HBtabelle table
-		echo "<tr";// class=\"{$row->background}";
-		//if ($row->heimVerein) echo ' heim';
-		echo "\">";
-		echo "<td>{$row->rank}</td><td class=\"textteam\"><strong>{$row->mannschaft}</strong></td>";
-		echo "<td>{$row->spiele}</td><td>{$row->s}</td><td>{$row->u}</td><td>{$row->n}</td>";
-		echo "<td>{$row->tore}</td><td>:</td><td>{$row->gegenTore}</td>";
-		echo "<td>{$row->diff}</td>";
-		echo "<td><strong>{$row->punkte}</strong></td><td>:</td><td><strong>{$row->nPunkte}</strong></td></tr>\n";
-	}
-echo "</tbody>";
-echo "</table>\n";
 
 
 if ($posLeague == 'underneath') {

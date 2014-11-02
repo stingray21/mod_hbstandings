@@ -27,11 +27,8 @@ $team = modHbStandingsHelper::getTeam($teamkey);
 $headline = modHbStandingsHelper::getHeadline($headlineOption, $team);
 $standings = modHbStandingsHelper::getStandings($team);
 //echo '<p>standings</p><pre>'; print_r($standings); echo '</pre>';
-$ranking = modHbStandingsHelper::getRanking($team);
-//echo '<p>ranking</p><pre>'; print_r($ranking); echo '</pre>';
-shuffle($ranking);
-$rankingSorted = modHbStandingsHelper::sortRanking($ranking, $teamkey, true);
-//echo '<p>rankingSorted</p><pre>'; print_r($rankingSorted); echo '</pre>';
+$detailedStandings = modHbStandingsHelper::getDetailedStandings($team);
+//echo '<p>rankingSorted</p><pre>'; print_r($detailedStandings); echo '</pre>';
 
 
 //Returns the path of the layout file

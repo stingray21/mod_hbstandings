@@ -21,6 +21,15 @@ class modHbStandingsHelper
 			$jAp->enqueueMessage(nl2br($db->getErrorMsg()),'error');
 			return;
 		}
+		if (empty($team)){
+			$team = new stdClass();
+			$team->mannschaft = 'Mannschaft';
+			$team->liga = 'Liga';
+			$team->ligaKuerzel = '';
+			$team->kuerzel = '';
+			$team->name = '';
+			$team->nameKurz = '';
+		}
 		return $team;
 	}
 	

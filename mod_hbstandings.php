@@ -19,6 +19,8 @@ if ($menuitemid)
 $teamkey = $menuparams->get('teamkey');
 // echo "TEAMKEY: {$teamkey}";
 
+// detailed or original HVW standings
+$detailed = true;
 
 // Include the syndicate functions only once
 require_once dirname(__FILE__).'/helper.php';
@@ -33,7 +35,7 @@ $detailedStandings = modHbStandingsHelper::getDetailedStandings($team);
 
 //Returns the path of the layout file
 require JModuleHelper::getLayoutPath('mod_hbstandings', $params->get('layout', 'default'));
-
+//TO DO option in backend for layout
 
 //$result = $this->model->getRanking();
 //$result = $this->model->getHead2Head('TSV Geislingen', 'SG Tail/Trucht','hbdata_m1_spielplan');

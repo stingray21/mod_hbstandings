@@ -1,48 +1,63 @@
 <?php 
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
-
-$document = JFactory::getDocument();
-$document->addStyleSheet(JURI::base() . 'modules/mod_hbstandings/css/default.css');
+JHtml::stylesheet('mod_hbstandings/default.css', array(), true);
 
 //echo "<p>".JText::_('DESC_MODULE')."</p>";
 
 if (count($standings)>0)
 {
-
-	// Headline
-	if (!empty($headline)){
-		echo '<h3>'.$headline.'</h3>';
-	}
-
+	echo (!empty($headline)) ?  '<h3>'.$headline.'</h3>'."\n\n" : '';
+	
 	if ($posLeague == 'above') {
-		echo '<p>Spielklasse: '.$team->liga.' ('.$team->ligaKuerzel.')</p>';
+		echo '<p>'.JText::_('COM_HBSTANDINGS_LEAGUE').': '.
+				$team->liga.' ('.$team->ligaKuerzel.')</p>';
 	}
-
-		echo "<table class=\"HBstandings HBhighlight\">";
-		echo "<thead>";
-		echo "<tr><th>Platz</th><th class=\"textteam\">Mannschaft</th>"
-			. "<th>Sp.</th><th>S</th><th>U</th><th>N</th><th colspan=\"3\" class=\"goals\">Tore</th>"
-			. "<th>Diff.</th><th colspan=\"3\">Punkte</th></tr>";
-		echo "</thead>\n";
-
-		echo "<tbody>";
+	
+	?>
+	<table>
+		<thead>
+			<tr>
+				<th><?php echo JText::_('COM_HBSTANDINGS_RANK');?></th>
+				<th><?php echo JText::_('COM_HBSTANDINGS_TEAM');?></th>
+				<th><?php echo JText::_('COM_HBSTANDINGS_GAMES');?></th>
+				<th><?php echo JText::_('COM_HBSTANDINGS_WINS');?></th>
+				<th><?php echo JText::_('COM_HBSTANDINGS_TIES');?></th>
+				<th><?php echo JText::_('COM_HBSTANDINGS_LOSSES');?></th>
+				<th colspan="3"><?php echo JText::_('COM_HBSTANDINGS_GOALS');?></th>
+				<th><?php echo JText::_('COM_HBSTANDINGS_GOALDIFFERENCE');?></th>
+				<th colspan="3"><?php echo JText::_('COM_HBSTANDINGS_POINTS');?></th>
+			</tr>
+		</thead>
+		
+		<tbody>
+			<?php
 			foreach ($standings as $row) {
-				// row in HBtabelle table
-				echo "<tr class=\"{$row->background}";
-				if ($row->heimVerein) echo ' heim';
-				echo "\">";
-				echo "<td>{$row->platz}</td><td class=\"textteam\"><strong>{$row->mannschaft}</strong></td>";
-				echo "<td>{$row->spiele}</td><td>{$row->s}</td><td>{$row->u}</td><td>{$row->n}</td>";
-				echo "<td class=\"goals\">{$row->tore}</td><td class=\"sepaDots\">:</td><td class=\"goalsCon\">{$row->gegenTore}</td>";
-				echo "<td>{$row->torDiff}</td>";
-				echo "<td class=\"points\"><strong>{$row->punkte}</strong></td><td class=\"sepaDots\">:</td><td class=\"negPoints\"><strong>{$row->minusPunkte}</strong></td></tr>\n";
+				?>
+				<tr class="<?php echo ($row->heimVerein) ? ' highlighted' :'';?>">
+					<td><?php echo $row->platz;?></td>
+					<td><?php echo $row->mannschaft?></td>
+					<td><?php echo $row->spiele?></td>
+					<td><?php echo $row->s?></td>
+					<td><?php echo $row->u?></td>
+					<td><?php echo $row->n?></td>
+					<td><?php echo $row->tore?></td>
+					<td>:</td>
+					<td><?php echo $row->gegenTore?></td>
+					<td><?php echo $row->torDiff?></td>
+					<td><?php echo $row->punkte?></td>
+					<td>:</td>
+					<td><?php echo $row->minusPunkte?></td>
+				</tr>
+				<?php
 			}
-		echo "</tbody>";
-		echo "</table>\n";
+		?>
+		</tbody>
+	</table>
 
-
+<?php
 	if ($posLeague == 'underneath') {
-		echo '<p>Spielklasse: '.$team->liga.' ('.$team->ligaKuerzel.')</p>';
+		echo '<p>'.JText::_('COM_HBSTANDINGS_LEAGUE').': '.
+				$team->liga.' ('.$team->ligaKuerzel.')</p>';
 	}
 }

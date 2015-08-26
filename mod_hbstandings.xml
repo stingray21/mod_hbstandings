@@ -25,12 +25,14 @@
 		<filename module="mod_hbstandings">mod_hbstandings.php</filename>
 		<filename>index.html</filename>
 		<filename>helper.php</filename>
-		<filename>tmpl/default.php</filename>
-		<filename>tmpl/index.html</filename>
-		<filename>css/default.css</filename>
-		<filename>css/index.html</filename>
+		<folder>tmpl</folder>
 	</files>
  
+	<media destination="mod_hbstandings" folder="media">
+		<filename>index.html</filename>
+		<folder>css</folder>
+	</media>
+	
 	<languages>
 		<!-- Any language files included with the module -->
 		<language tag="de-DE">language/de-DE.mod_hbstandings.ini</language>

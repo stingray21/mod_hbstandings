@@ -85,6 +85,15 @@
 						<option value="0">JNO</option>
 						<option value="1">JYES</option>
 				</field>
+				<field 
+					name="layout" 
+					type="list" 
+					default="default" 
+					label="LABEL_MODHBSTANDINGS_LAYOUT" 
+					description="DESC_MODHBSTANDINGS_LAYOUT">
+						<option value="default">MODHBSTANDINGS_LAYOUT_DEFAULT</option>
+						<option value="detailed">MODHBSTANDINGS_LAYOUT_DETAILED</option>
+				</field>
 			</fieldset>
 		</fields>
 	</config>

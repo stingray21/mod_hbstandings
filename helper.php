@@ -47,6 +47,18 @@ class modHbStandingsHelper
 		}
 	}
 	
+	private static function getSeason()
+    {
+		$year = strftime('%Y');
+		if (strftime('%m') < 8) {
+			$year = $year-1;
+		}
+		
+		$season = $year."-".($year+1);
+		//echo __FILE__.'('.__LINE__.'):<pre>';print_r($season);echo'</pre>';
+		return $season;
+    }
+	
 	public static function getStandings($team)
 	{
 		$db = JFactory::getDBO();
@@ -56,6 +68,7 @@ class modHbStandingsHelper
 			'IF('.$db->qn('mannschaft').'='.$db->q($team->name).',1,0) AS heimVerein');
 		$query->from($db->qn('hb_tabelle'));
 		$query->where($db->qn('kuerzel').' = '.$db->q($team->kuerzel));
+		$query->where('hb_tabelle.'.$db->qn('saison').' = '.$db->q(self::getSeason()));
 		$query->order($db->qn('platz'));
 		//echo nl2br($query);//die; //see resulting query
 		$db->setQuery($query);
@@ -96,6 +109,7 @@ class modHbStandingsHelper
 			'IF('.$db->qn('mannschaft').'='.$db->q($team->name).',1,0) AS heimVerein');
 		$query->from($db->qn('hb_tabelle_details'));
 		$query->where($db->qn('kuerzel').' = '.$db->q($team->kuerzel));
+		$query->where('hb_tabelle_details.'.$db->qn('saison').' = '.$db->q(self::getSeason()));
 		$query->order($db->qn('platz'));
 		//echo nl2br($query);//die; //see resulting query
 		$db->setQuery($query);

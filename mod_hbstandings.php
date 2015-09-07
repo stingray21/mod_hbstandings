@@ -8,7 +8,6 @@ $posLeague = $params->get('posLeague');
 $headlineOption = $params->get('headline');
 
 
-
 // get teamkey parameter from component menu item
 $menuitemid = JRequest::getInt('Itemid');
 if ($menuitemid)

@@ -1,3 +1,39 @@
 .ownTeam {
 	font-weight: bold;
 }
+
+div.hbstandings table {
+	text-align: center;
+}
+
+div.hbstandings table th.textteam,
+div.hbstandings table td.textteam{
+	text-align: left;
+}
+
+div.hbstandings table td.negPoints,
+div.hbstandings table td.goalsCon {
+	text-align: left;
+}
+
+div.hbstandings table td.sepaDots{
+	padding-left: 0;
+	padding-right: 0;
+}
+
+
+div.hbstandings table td.points,
+div.hbstandings table td.goals{
+	text-align: right;
+}
+
+
+@media (max-width: 979px) {
+	div.hbstandings table {
+		font-size: 0.7em;
+	}
+
+	div.hbstandings table th {
+		font-size: 1em;
+	}
+}

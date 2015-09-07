@@ -7,6 +7,8 @@ JHtml::stylesheet('mod_hbstandings/default.css', array(), true);
 
 if (count($standings)>0)
 {
+	echo '<div class="hbstandings">';
+	
 	echo (!empty($headline)) ?  '<h3>'.$headline.'</h3>'."\n\n" : '';
 	
 	if ($posLeague == 'above') {
@@ -60,4 +62,6 @@ if (count($standings)>0)
 		echo '<p>'.JText::_('COM_HBSTANDINGS_LEAGUE').': '.
 				$team->liga.' ('.$team->ligaKuerzel.')</p>';
 	}
+	
+	echo '</div>';
 }

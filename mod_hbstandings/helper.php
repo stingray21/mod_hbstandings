@@ -106,7 +106,7 @@ class modHbStandingsHelper
 		// getting standings of the team from the DB
 		$query = $db->getQuery(true);
 		$query->select('*, '.
-			'IF('.$db->qn('mannschaft').'='.$db->q($team->name).',1,0) AS heimVerein');
+			'IF('.$db->qn('mannschaft').'='.$db->q($team->nameKurz).',1,0) AS heimVerein');
 		$query->from($db->qn('hb_tabelle_details'));
 		$query->where($db->qn('kuerzel').' = '.$db->q($team->kuerzel));
 		$query->where('hb_tabelle_details.'.$db->qn('saison').' = '.$db->q(self::getSeason()));

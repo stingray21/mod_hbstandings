@@ -6,7 +6,7 @@
 	<!-- Name of the Author -->
 	<author>Jochen Stehle</author> 
 	<!-- Version Date of the Module -->
-	<creationDate>07.09.2015</creationDate> 
+	<creationDate>15.09.2015</creationDate> 
 	<!-- Copyright information -->
 	<copyright>All rights reserved by Jochen Stehle</copyright> 
 	<!-- License Information -->
@@ -16,7 +16,7 @@
 	<!-- Author's website -->
 	<authorUrl></authorUrl> 
 	<!-- Module version number -->
-	<version>1.0.3</version> 
+	<version>1.0.4</version> 
 	<!-- Description of what the module does -->
 	<description>Provides the season standings of a team</description>
 	<!-- Listing of all files that should be installed for the module to function -->
@@ -59,29 +59,29 @@
 				<field 
 					name="posLeague" 
 					type="list" 
-					default="above" 
-					label="LABEL_MODHBSTANDINGS_POSITIONLEAGUE" 
-					description="DESC_MODHBSTANDINGS_POSITIONLEAGUE">
-						<option value="above">MODHBSTANDINGS_POSITIONLEAGUE_ABOVE</option>
-						<option value="underneath">MODHBSTANDINGS_POSITIONLEAGUE_UNDERNEATH</option>
-						<option value="not">MODHBSTANDINGS_POSITIONLEAGUE_NOT</option>
+					default="underneath" 
+					label="LABEL_MOD_HBSTANDINGS_POSITIONLEAGUE" 
+					description="DESC_MOD_HBSTANDINGS_POSITIONLEAGUE">
+						<option value="above">MOD_HBSTANDINGS_POSITIONLEAGUE_ABOVE</option>
+						<option value="underneath">MOD_HBSTANDINGS_POSITIONLEAGUE_UNDERNEATH</option>
+						<option value="not">MOD_HBSTANDINGS_POSITIONLEAGUE_NOT</option>
 				</field>
 				<field 
 					name="headline" 
 					type="list" 
 					default="above" 
-					label="LABEL_MODHBSTANDINGS_HEADLINE" 
-					description="DESC_MODHBSTANDINGS_HEADLINE">
-						<option value="title">MODHBSTANDINGS_HEADLINE_TITLE</option>
-						<option value="titleandteam">MODHBSTANDINGS_HEADLINE_TITLEANDTEAM</option>
-						<option value="not">MODHBSTANDINGS_HEADLINE_NOT</option>
+					label="LABEL_MOD_HBSTANDINGS_HEADLINE" 
+					description="DESC_MOD_HBSTANDINGS_HEADLINE">
+						<option value="title">MOD_HBSTANDINGS_HEADLINE_TITLE</option>
+						<option value="titleandteam">MOD_HBSTANDINGS_HEADLINE_TITLEANDTEAM</option>
+						<option value="not">MOD_HBSTANDINGS_HEADLINE_NOT</option>
 				</field>
 				<field 
 					name="highlighthometeam" 
 					type="radio" 
 					default="1" 
-					label="LABEL_MODHBSTANDINGS_HIGHLIGHTHOMETEAM" 
-					description="DESC_MODHBSTANDINGS_HIGHLIGHTHOMETEAM">
+					label="LABEL_MOD_HBSTANDINGS_HIGHLIGHTHOMETEAM" 
+					description="DESC_MOD_HBSTANDINGS_HIGHLIGHTHOMETEAM">
 						<option value="0">JNO</option>
 						<option value="1">JYES</option>
 				</field>
@@ -89,10 +89,10 @@
 					name="layout" 
 					type="list" 
 					default="default" 
-					label="LABEL_MODHBSTANDINGS_LAYOUT" 
-					description="DESC_MODHBSTANDINGS_LAYOUT">
-						<option value="default">MODHBSTANDINGS_LAYOUT_DEFAULT</option>
-						<option value="detailed">MODHBSTANDINGS_LAYOUT_DETAILED</option>
+					label="LABEL_MOD_HBSTANDINGS_LAYOUT" 
+					description="DESC_MOD_HBSTANDINGS_LAYOUT">
+						<option value="default">MOD_HBSTANDINGS_LAYOUT_DEFAULT</option>
+						<option value="detailed">MOD_HBSTANDINGS_LAYOUT_DETAILED</option>
 				</field>
 			</fieldset>
 		</fields>

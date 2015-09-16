@@ -1,9 +1,18 @@
-.ownTeam {
-	font-weight: bold;
+div.hbstandings p {
+	color: #999;
+	text-align: right;
+}
+
+div.hbstandings p:hover {
+	color: #555;
 }
 
 div.hbstandings table {
 	text-align: center;
+}
+
+.ownTeam {
+	font-weight: bold;
 }
 
 div.hbstandings table th.textteam,

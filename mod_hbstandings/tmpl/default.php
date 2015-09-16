@@ -10,9 +10,11 @@ if (count($standings)>0)
 	echo '<div class="hbstandings">';
 	
 	echo (!empty($headline)) ?  '<h3>'.$headline.'</h3>'."\n\n" : '';
-	
+	?>
+<div class="team-table">
+<?php
 	if ($posLeague == 'above') {
-		echo '<p>'.JText::_('COM_HBSTANDINGS_LEAGUE').': '.
+		echo '<p>'.JText::_('MOD_HBSTANDINGS_LEAGUE').': '.
 				$team->liga.' ('.$team->ligaKuerzel.')</p>';
 	}
 	
@@ -20,15 +22,15 @@ if (count($standings)>0)
 	<table>
 		<thead>
 			<tr>
-				<th><?php echo JText::_('COM_HBSTANDINGS_RANK');?></th>
-				<th><?php echo JText::_('COM_HBSTANDINGS_TEAM');?></th>
-				<th><?php echo JText::_('COM_HBSTANDINGS_GAMES');?></th>
-				<th><?php echo JText::_('COM_HBSTANDINGS_WINS');?></th>
-				<th><?php echo JText::_('COM_HBSTANDINGS_TIES');?></th>
-				<th><?php echo JText::_('COM_HBSTANDINGS_LOSSES');?></th>
-				<th colspan="3"><?php echo JText::_('COM_HBSTANDINGS_GOALS');?></th>
-				<th><?php echo JText::_('COM_HBSTANDINGS_GOALDIFFERENCE');?></th>
-				<th colspan="3"><?php echo JText::_('COM_HBSTANDINGS_POINTS');?></th>
+				<th><?php echo JText::_('MOD_HBSTANDINGS_RANK');?></th>
+				<th><?php echo JText::_('MOD_HBSTANDINGS_TEAM');?></th>
+				<th><?php echo JText::_('MOD_HBSTANDINGS_GAMES');?></th>
+				<th><?php echo JText::_('MOD_HBSTANDINGS_WINS');?></th>
+				<th><?php echo JText::_('MOD_HBSTANDINGS_TIES');?></th>
+				<th><?php echo JText::_('MOD_HBSTANDINGS_LOSSES');?></th>
+				<th colspan="3"><?php echo JText::_('MOD_HBSTANDINGS_GOALS');?></th>
+				<th><?php echo JText::_('MOD_HBSTANDINGS_GOALDIFFERENCE');?></th>
+				<th colspan="3"><?php echo JText::_('MOD_HBSTANDINGS_POINTS');?></th>
 			</tr>
 		</thead>
 		
@@ -59,9 +61,11 @@ if (count($standings)>0)
 
 <?php
 	if ($posLeague == 'underneath') {
-		echo '<p>'.JText::_('COM_HBSTANDINGS_LEAGUE').': '.
+		echo '<p>'.JText::_('MOD_HBSTANDINGS_LEAGUE').': '.
 				$team->liga.' ('.$team->ligaKuerzel.')</p>';
 	}
 	
 	echo '</div>';
 }
+?>
+</div>

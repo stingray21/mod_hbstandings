@@ -14,7 +14,9 @@ if (count($standings)>0)
 	if (!empty($headline)){
 		echo '<h3>'.$headline.'</h3>';
 	}
-
+	?>
+<div class="team-table">
+	<?php
 	if ($posLeague == 'above') {
 		echo '<p>Spielklasse: '.$team->liga.' ('.$team->ligaKuerzel.')</p>';
 	}
@@ -31,7 +33,7 @@ if (count($standings)>0)
 			foreach ($detailedStandings as $row) {
 				// row in HBtabelle table
 				echo "<tr class=\"{$row->background}";
-				if ($row->heimVerein) echo " heim";
+				if ($row->heimVerein) echo " highlighted";
 				echo "\">";
 				echo "<td>{$row->platz}</td><td class=\"textteam\"><strong>{$row->mannschaft}</strong></td>";
 				echo "<td>{$row->spiele}</td>";
@@ -44,12 +46,11 @@ if (count($standings)>0)
 			}
 		echo "</tbody>";
 		echo "</table>\n";
-	
-
-
 
 	if ($posLeague == 'underneath') {
 		echo '<p>Spielklasse: '.$team->liga.' ('.$team->ligaKuerzel.')</p>';
 	}
-	echo '<div>';
+	echo '</div>';
 }
+?>
+</div>

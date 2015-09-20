@@ -99,6 +99,21 @@ class modHbStandingsHelper
 		}
 		return $standings;
 	}
+	
+	protected static function removeSameRank ($standings)
+	{
+		$lastRank = 0;
+		foreach ($standings as $row)
+		{
+			// 
+			if ($row->platz == $lastRank) {
+				$row->platz= '';
+			} else {
+				$lastRank = $row->platz;				
+			}
+		}
+		return $standings;
+	}
 
 	public static function getDetailedStandings($team)
 	{
@@ -121,6 +136,7 @@ class modHbStandingsHelper
 			$jAp->enqueueMessage(nl2br($db->getErrorMsg()),'error');
 			return;
 		}
+		$standings = self::removeSameRank($standings);
 		$standings = self::addBackground($standings);
 		return $standings;
 	}

@@ -6,7 +6,7 @@
 	<!-- Name of the Author -->
 	<author>Jochen Stehle</author> 
 	<!-- Version Date of the Module -->
-	<creationDate>16.09.2015</creationDate> 
+	<creationDate>16.09.2016</creationDate> 
 	<!-- Copyright information -->
 	<copyright>All rights reserved by Jochen Stehle</copyright> 
 	<!-- License Information -->
@@ -16,7 +16,7 @@
 	<!-- Author's website -->
 	<authorUrl></authorUrl> 
 	<!-- Module version number -->
-	<version>1.0.5</version> 
+	<version>1.0.6</version> 
 	<!-- Description of what the module does -->
 	<description>Provides the season standings of a team</description>
 	<!-- Listing of all files that should be installed for the module to function -->

@@ -16,7 +16,7 @@
 	<!-- Author's website -->
 	<authorUrl></authorUrl> 
 	<!-- Module version number -->
-	<version>1.0.6</version> 
+	<version>1.0.7</version> 
 	<!-- Description of what the module does -->
 	<description>Provides the season standings of a team</description>
 	<!-- Listing of all files that should be installed for the module to function -->

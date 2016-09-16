@@ -51,6 +51,7 @@ if (count($standings)>0)
 		echo '<p>Spielklasse: '.$team->liga.' ('.$team->ligaKuerzel.')</p>';
 	}
 	echo '</div>';
+echo '</div>';
+
 }
 ?>
-</div>
